@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="DeCoPrune: training-free KV-cache pruning for autoregressive video diffusion. Animated method, CMBench results, and synchronized video comparisons.">
+<meta name="theme-color" content="#101925"><title>DeCoPrune | Denoising Consistency for Video Memory</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css"><script src="data.js" defer></script><script src="app.js" defer></script><link rel="stylesheet" href="method.css"><script src="method.js" defer></script>
+<link rel="stylesheet" href="episode.css"><script src="episode.js" defer></script>
+<script src="site-config.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#overview">Skip to content</a>
+<header class="navigation" id="navigation"><a class="wordmark" href="#top" aria-label="DeCoPrune home">DeCoPrune</a><button class="menu-button" id="menu-button" aria-expanded="false" aria-controls="nav-links">Menu ☰</button><nav id="nav-links" aria-label="Main navigation"><a href="#overview">Overview</a><a href="#method">Method</a><a href="#results">Results</a><a href="#benchmark">CMBench</a><a href="#gallery">Gallery</a></nav><a class="nav-paper" href="#paper" data-paper-link target="_blank" rel="noopener">Read paper ↗</a></header>
+<main>
+<section class="hero" id="top" aria-labelledby="hero-title">
+ <div class="hero-mosaic" aria-hidden="true">
+  <video muted loop playsinline preload="none" poster="assets/posters/anime_crystal_cavern_lab_clip02__ours.jpg" data-src="assets/anime_crystal_cavern_lab_clip02__ours.mp4" tabindex="-1"></video>
+  <video muted loop playsinline preload="none" poster="assets/posters/case_09_lakeside_shelter_clip05__ours.jpg" data-src="assets/case_09_lakeside_shelter_clip05__ours.mp4" tabindex="-1"></video>
+  <video muted loop playsinline preload="none" poster="assets/posters/case_36_planetarium_control_clip02__ours.jpg" data-src="assets/case_36_planetarium_control_clip02__ours.mp4" tabindex="-1"></video>
+  <video muted loop playsinline preload="none" poster="assets/posters/case_02_volcano_monitoring_terrace_clip02__ours.jpg" data-src="assets/case_02_volcano_monitoring_terrace_clip02__ours.mp4" tabindex="-1"></video>
+ </div><div class="hero-shade"></div>
+ <div class="hero-content container"><p class="eyebrow light">Autoregressive video diffusion · Project page</p><h1 id="hero-title">DeCo<span>Prune</span></h1><h2>Efficient KV-Cache Pruning<br>via Denoising Consistency</h2><p class="hero-summary">Keep distinctive visual evidence. Prune what the context already explains.<br>A training-free memory policy for long-context video generation.</p><div class="hero-actions"><a class="button white" href="#paper" data-paper-link target="_blank" rel="noopener">↗ Paper</a><a class="button glass" href="https://huggingface.co/datasets/Aoraku/CMBench" target="_blank" rel="noopener">CMBench ↗</a><a class="button glass" href="#method">Explore the method ↓</a><a class="button glass" href="#gallery">Watch comparisons</a></div></div>
+ <div class="hero-bottom container"><a href="#overview">Discover ↓</a><span>Selected CMBench continuations · DeCoPrune</span><button id="hero-motion" aria-pressed="true">Pause background</button></div>
+</section>
+<section class="authors-section container" aria-label="Authors and affiliations">
+ <div class="authors-list">
+  <span>Zeqi Xiao<sup>1,*</sup></span><span>Qingle Liu<sup>2,*</sup></span><span>Kaiwen Zhang<sup>1</sup></span>
+  <span>Yifan Zhou<sup>1</sup></span><span>Zihan Ding<sup>3</sup></span><span>Xingang Pan<sup>1,†</sup></span>
+ </div>
+ <div class="affiliations"><span><sup>1</sup>Nanyang Technological University</span><span><sup>2</sup>Tsinghua University</span><span><sup>3</sup>Princeton University</span></div>
+ <p class="author-notes"><span><sup>*</sup>Equal contribution</span><span><sup>†</sup>Corresponding author</span></p>
+</section>
+<section class="section container" id="overview" aria-labelledby="overview-title">
+ <div class="overview-intro"><div class="overview-explanation">
+ <div class="section-heading"><p class="eyebrow">01 / Overview</p><h2 id="overview-title">Denoising reveals<br><span class="subtle">what memory should keep.</span></h2></div>
+ <div class="overview-copy"><p>As a video grows, so does its KV cache. DeCoPrune uses a signal already present in the generator: how much each token’s clean prediction changes between an intermediate probe and the final denoising result.</p><p>Low-discrepancy tokens are treated as redundant. High-discrepancy tokens preserve distinctive evidence in the long-term cache. No additional predictor or model training is required.</p></div>
+ </div><figure class="overview-teaser"><a href="assets/teaser-b.svg" target="_blank" rel="noopener" aria-label="Enlarge Figure 1(b): consistency–pruning trade-off"><img src="assets/teaser-b.svg" width="2100" height="1900" loading="lazy" decoding="async" alt="Figure 1(b): DINO consistency versus pruning ratio. DeCoPrune is compared with TempDiff, ForcingKV, DummyForcing, Streaming, and the unpruned FullKV reference."></a><figcaption><span><strong>Figure 1(b)</strong> Consistency–pruning trade-off</span><a href="assets/teaser-b.svg" target="_blank" rel="noopener" aria-label="Open the full-size trade-off chart">Enlarge ↗</a></figcaption></figure></div>
+ <div class="metrics" aria-label="DeCoPrune main results"><div><strong>85.43<span>%</span></strong><p>Historical KV workload pruned</p></div><div><strong>4.14<span>×</span></strong><p>Speedup over FullKV</p></div><div><strong>0.6701</strong><p>DINO consistency · FullKV: 0.6803</p></div><div><strong>116</strong><p>Context-memory continuation tasks</p></div></div>
+ <p class="fine-print">Main comparison: LingBot World v2 on four H200 GPUs, averaged over three seeds. DINO is reported on a 0–1 scale.</p>
+</section>
+<section class="ep-section section container" id="episode" aria-labelledby="episode-title">
+ <div class="section-heading horizontal"><div><p class="eyebrow">Case study / From context to recall</p><h2 id="episode-title">One episode.<br><span class="subtle">A memory put to the test.</span></h2></div><p>A green-banded thermos appears, disappears, and is requested again. Watch the full context alongside what DeCoPrune keeps.</p></div>
+ <div class="ep-shell">
+  <div class="ep-topline"><div><span class="ep-badge">Reappear</span><strong>Lakeside shelter · the thermos</strong></div><span>60 s context → 3 s continuation</span></div>
+  <div class="ep-pair">
+   <figure><figcaption><span>01</span><strong>Full episode</strong><small>Original context · 60 s</small></figcaption><video id="ep-context" src="assets/episode/context.mp4" muted playsinline preload="none" poster="assets/episode/context-25.jpg" aria-label="Complete sixty-second lakeside shelter context"></video></figure>
+   <figure><figcaption><span>02</span><strong>DeCoPrune mask</strong><small><i class="ep-dot keep"></i> Retain <i class="ep-dot prune"></i> Prune</small></figcaption><video id="ep-mask" src="assets/episode/mask.mp4" muted playsinline preload="none" poster="assets/episode/mask-25.jpg" aria-label="Recorded retention mask aligned to the complete context"></video></figure>
+  </div>
+  <div class="ep-controls"><button class="button primary" id="ep-play" aria-pressed="false">Play episode</button><button class="ep-restart" id="ep-restart" aria-label="Restart context and mask">↺</button><label for="ep-progress" class="sr-only">Seek context and mask together</label><input id="ep-progress" type="range" min="0" max="60" step="0.05" value="0"><output id="ep-time" for="ep-progress">0:00 / 1:00</output><label class="sr-only" for="ep-speed">Episode playback speed</label><select id="ep-speed"><option value="1">1×</option><option value="2">2×</option></select></div>
+  <div class="ep-chapters" role="group" aria-label="Jump to a context chapter">
+   <button data-ep-seek="0" aria-pressed="true"><img src="assets/episode/context-5.jpg" loading="lazy" alt=""><span><b>00–10 s</b>Establish the view</span></button>
+   <button data-ep-seek="10" aria-pressed="false"><img src="assets/episode/context-15.jpg" loading="lazy" alt=""><span><b>10–20 s</b>A brief interaction</span></button>
+   <button data-ep-seek="20" aria-pressed="false"><img src="assets/episode/context-25.jpg" loading="lazy" alt=""><span><b>20–30 s</b>Show the thermos</span></button>
+   <button data-ep-seek="30" aria-pressed="false"><img src="assets/episode/context-35.jpg" loading="lazy" alt=""><span><b>30–40 s</b>A visual detour</span></button>
+   <button data-ep-seek="40" aria-pressed="false"><img src="assets/episode/context-45.jpg" loading="lazy" alt=""><span><b>40–50 s</b>Turn away</span></button>
+   <button data-ep-seek="50" aria-pressed="false"><img src="assets/episode/context-55.jpg" loading="lazy" alt=""><span><b>50–60 s</b>Return to the lake</span></button>
+  </div>
+  <p class="ep-status" id="ep-status" role="status">Context and recorded mask share one playhead. Select a chapter to inspect it.</p>
+  <div class="ep-outcome">
+   <div class="ep-prompt"><p class="eyebrow">03 / Recall prompt</p><h3>Bring back the same thermos.</h3><p class="ep-task">The hands lift the previously seen thermos from the canvas bag. Its shape, markings, and appearance must be recovered from earlier context.</p><details><summary>Read the full benchmark prompt</summary><blockquote id="ep-prompt-text">Continue the coherent first-person video from its final frame. Reproduce the exact same physical slender cylindrical thermos with its screw-top lid from the preceding context. Treat the preceding video as the complete and authoritative visual reference for the thermos. The action is explicit and continuous: the same hands naturally lift the same slender cylindrical thermos from the canvas day bag back into clear view. Preserve the thermos's exact instance identity, body and lid geometry, dimensions, proportions, neck rings, base, decorative-marking layout, materials, texture, wear, surface details, scale, orientation, motion, and hand interaction. Maintain the same scene, lighting, shadows, perspective, spatial layout, viewpoint behavior, and visual style, with physically plausible and temporally smooth motion.</blockquote></details><button class="button outline" id="ep-result-play">Watch the result →</button></div>
+   <figure class="ep-result"><figcaption><span>04</span><strong>Generated continuation</strong><small>DeCoPrune · 3 s</small></figcaption><video id="ep-result" controls muted playsinline preload="none" poster="assets/episode/result-2.jpg" aria-label="Three-second DeCoPrune continuation recalling the thermos"><source src="assets/episode/result-3s.mp4" type="video/mp4"></video></figure>
+  </div>
+ </div>
+ <details class="ep-provenance"><summary>About this recorded example</summary><p id="ep-source-note">Lakeside shelter: the first 3 seconds of the continuation, played at its original speed. The context overlay and generated continuation are from the same case and run. The prompt below is the benchmark continuation prompt. This companion example follows Figure 1's presentation, not the exact Figure 1 run; its metrics are not substituted for Figure 1's.</p><p>The mask is a recorded KV-retention overlay, not the schematic animation below. Only the 60-second context portion is shown; alignment padding and generation frames are excluded.</p><a href="assets/episode/case.json" target="_blank" rel="noopener">Case and benchmark prompt ↗</a></details>
+</section>
+<section class="method-section" id="method" aria-labelledby="method-title"><div class="container">
+ <div class="section-heading horizontal"><div><p class="eyebrow">02 / Figure 3, in motion</p><h2 id="method-title">One signal.<br>A complete cache update.</h2></div><p>Follow the predictions down to DeCoPrune,<br>then the retention mask back to the online cache.</p></div>
+ <div class="fm-player" id="method-player">
+  <div class="fm-toolbar"><div class="fm-tabs" role="group" aria-label="Inspect linked method stage"><button data-method-stage="0" aria-pressed="true">01 Generate</button><button data-method-stage="1" aria-pressed="false">02 Compare</button><button data-method-stage="2" aria-pressed="false">03 Mask</button><button data-method-stage="3" aria-pressed="false">04 Update</button></div><div class="fm-playback"><label class="sr-only" for="speed">Animation speed</label><select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option></select><button id="method-restart" aria-label="Restart method animation">↺ Restart</button><button id="method-play" aria-pressed="true">Pause</button></div></div>
+  <p class="fm-mobile-hint">Swipe the diagram to follow the full flow ↔</p>
+  <div class="fm-viewport" tabindex="0" role="region" aria-label="Figure 3 linked animation; scroll horizontally on small screens">
+   <svg id="method-diagram" viewBox="0 0 1240 586" role="img" aria-labelledby="method-svg-title method-svg-desc">
+    <title id="method-svg-title">Online cache update linked to the DeCoPrune denoising-consistency mask</title>
+    <desc id="method-svg-desc">Figure 3: historical cache, current chunk, current KV, gather, and updated history. The current chunk feeds prediction below; KV is cached back above. Context conditions the noise-to-probe-to-final denoising trajectory. The complete discrepancy map appears at once, then its spatial cells are thresholded into a retention mask and returned to the cache.</desc>
+    <defs>
+     <marker id="fm-blue-tip" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="#3565bc" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker>
+     <marker id="fm-green-tip" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="#258d78" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker>
+     <marker id="fm-gray-tip" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="#8b96a5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker>
+     <linearGradient id="fm-heat-colors" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffbd"/><stop offset=".35" stop-color="#fa9d75"/><stop offset=".65" stop-color="#b63387"/><stop offset="1" stop-color="#291041"/></linearGradient>
+     <marker id="fm-orange-tip" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="#ce8152" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker>
+     <clipPath id="fm-heat-clip"><rect x="710" y="360" width="136" height="136" rx="5"/></clipPath>
+    </defs>
+    <rect x="18" y="18" width="1204" height="178" rx="13" fill="#f7f8fa" stroke="#dce3ec"/>
+    <text x="40" y="49" class="fm-band-title">Online cache update</text>
+    <g class="fm-legend" id="fm-cache-legend"><rect x="705" y="33" width="16" height="16" rx="2" fill="#589bd6"/><text x="728" y="46">History</text><rect x="798" y="33" width="16" height="16" rx="2" fill="#aeb1b7"/><text x="821" y="46">Current chunk</text><rect x="934" y="33" width="16" height="16" rx="2" fill="#eaa16e"/><text x="957" y="46">Current KV</text><rect x="1065" y="33" width="16" height="16" rx="2" fill="#2b9d85"/><text x="1088" y="46">Retained KV</text></g>
+    <rect class="fm-focus" id="fm-focus-history" x="32" y="65" width="203" height="118" rx="9"/>
+    <rect class="fm-focus" id="fm-focus-chunk" x="244" y="65" width="166" height="118" rx="9"/>
+    <rect class="fm-focus" id="fm-focus-current" x="425" y="65" width="164" height="118" rx="9"/>
+    <rect class="fm-focus" id="fm-focus-gather" x="599" y="65" width="294" height="118" rx="9"/>
+    <rect class="fm-focus" id="fm-focus-updated" x="936" y="65" width="269" height="118" rx="9"/>
+    <text x="48" y="92" class="fm-node-title">Historical cache H<tspan baseline-shift="sub" font-size="12">&lt;i</tspan></text>
+    <g id="fm-history"></g><text x="48" y="169" class="fm-note">Retained visual context</text>
+    <text x="254" y="92" class="fm-node-title">Current chunk x<tspan baseline-shift="sub" font-size="12">i</tspan></text><g id="fm-chunk"></g>
+    <text x="254" y="169" class="fm-note" id="fm-generation-label">Denoising trajectory</text>
+    <text x="440" y="92" class="fm-node-title">Current KV</text><g id="fm-current"></g>
+    <text x="440" y="169" class="fm-note">K<tspan baseline-shift="sub" font-size="9">i</tspan>, V<tspan baseline-shift="sub" font-size="9">i</tspan> from denoising</text>
+    <text x="617" y="92" class="fm-node-title">Gather KV with m<tspan baseline-shift="sub" font-size="12">i</tspan></text>
+    <g id="fm-gather-source"></g><path class="fm-link green" d="M766 129H786" marker-end="url(#fm-green-tip)"/><g id="fm-gather-output"></g>
+    <text x="617" y="169" class="fm-note">Same selected rows in K and V</text>
+    <text x="954" y="92" class="fm-node-title">Updated cache → next chunk</text>
+    <g id="fm-updated-history"></g><g id="fm-updated-retained"></g><text x="954" y="169" class="fm-note">Historical KV + retained KV</text>
+    <path class="fm-link" id="fm-history-flow" d="M233 129H244" marker-end="url(#fm-blue-tip)"/>
+    <path class="fm-link" id="fm-current-flow" d="M592 129H607" marker-end="url(#fm-blue-tip)"/>
+    <path class="fm-link" id="fm-update-flow" d="M892 129H925" marker-end="url(#fm-blue-tip)"/>
+    <path class="fm-bridge" id="fm-prediction-path" d="M328 198V259" marker-end="url(#fm-blue-tip)"/>
+    <text x="340" y="234" class="fm-bridge-label">Predict</text>
+    <path class="fm-bridge orange" id="fm-kv-path" d="M507 259V198" marker-end="url(#fm-orange-tip)"/>
+    <text x="519" y="234" class="fm-bridge-label orange">Cache KV</text>
+    <circle id="fm-kv-packet" r="5" fill="#ce8152" stroke="white" stroke-width="2" opacity="0"/>
+    <path class="fm-bridge green" id="fm-mask-path" d="M1041 259V234Q1041 225 1032 225H808Q799 225 799 216V198" marker-end="url(#fm-green-tip)"/>
+    <text x="844" y="215" class="fm-bridge-label green">Retention mask m<tspan baseline-shift="sub" font-size="12">i</tspan></text>
+    <circle id="fm-prediction-packet" r="5" fill="#3565bc" stroke="white" stroke-width="2" opacity="0"/>
+    <circle id="fm-mask-packet" r="5" fill="#258d78" stroke="white" stroke-width="2" opacity="0"/>
+    <rect id="fm-core-panel" x="18" y="267" width="1204" height="299" rx="13" fill="#edf3ff" stroke="#91afe8" stroke-width="1.5"/>
+    <text x="40" y="301" class="fm-core-title">DeCoPrune: denoising-consistency mask</text>
+    <text x="188" y="335" class="fm-step-title">1  Compare clean predictions</text>
+    <text x="700" y="335" class="fm-step-title">2  Measure discrepancy</text>
+    <text x="954" y="335" class="fm-step-title">3  Threshold into a mask</text>
+    <g id="fm-context-card"><image href="assets/method/context-back.png" x="32" y="378" width="118" height="118" opacity=".4"/><image href="assets/method/context-middle.png" x="41" y="369" width="118" height="118" opacity=".65"/><image href="assets/method/context.png" x="50" y="360" width="118" height="118"/><text x="100" y="529" text-anchor="middle" class="fm-image-label">Context</text></g>
+    <g id="fm-noise-card"><image href="assets/method/noise.png" x="188" y="360" width="136" height="136" preserveAspectRatio="xMidYMid meet"/><text x="256" y="529" text-anchor="middle" class="fm-image-label">Noise</text></g>
+    <g id="fm-probe-card"><image href="assets/method/probe.png" x="352" y="360" width="136" height="136" preserveAspectRatio="xMidYMid meet"/><rect x="352" y="360" width="136" height="136" rx="5" class="fm-image-border"/><text x="420" y="529" text-anchor="middle" class="fm-image-label">Probe: x̂<tspan baseline-shift="sub" font-size="12">0,i</tspan>(τ*)</text></g>
+    <g id="fm-final-card"><image href="assets/method/final.png" x="516" y="360" width="136" height="136" preserveAspectRatio="xMidYMid meet"/><rect x="516" y="360" width="136" height="136" rx="5" class="fm-image-border"/><text x="584" y="529" text-anchor="middle" class="fm-image-label">Final: x<tspan baseline-shift="sub" font-size="12">i</tspan><tspan baseline-shift="super" font-size="12">final</tspan></text></g>
+    <path class="fm-denoise" id="fm-denoise-a" d="M330 428H346" marker-end="url(#fm-gray-tip)"/><path class="fm-denoise" id="fm-denoise-b" d="M494 428H510" marker-end="url(#fm-gray-tip)"/>
+    <path class="fm-link" id="fm-compare-flow" d="M664 428H698" marker-end="url(#fm-blue-tip)"/>
+    <rect x="710" y="360" width="136" height="136" rx="5" fill="#e0e6f0"/>
+    <image id="fm-heatmap" href="assets/method/discrepancy.png" x="710" y="360" width="136" height="136" opacity="0" clip-path="url(#fm-heat-clip)"/>
+    <rect x="858" y="360" width="8" height="136" rx="4" fill="url(#fm-heat-colors)"/>
+    <text x="874" y="373" class="fm-note">High</text><text x="874" y="494" class="fm-note">Low</text>
+    <foreignObject x="671" y="508" width="252" height="35"><div xmlns="http://www.w3.org/1999/xhtml" class="fm-equation"><math aria-label="Token-wise mean squared discrepancy"><mrow><msub><mi>ℓ</mi><mrow><mi>i</mi><mo>,</mo><mi>p</mi></mrow></msub><mo>=</mo><msubsup><mrow><mo>‖</mo><msub><mover><mi>x</mi><mo>^</mo></mover><mrow><mn>0</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>p</mi></mrow></msub><mo>(</mo><msup><mi>τ</mi><mo>∗</mo></msup><mo>)</mo><mo>−</mo><msubsup><mi>x</mi><mrow><mi>i</mi><mo>,</mo><mi>p</mi></mrow><mtext>final</mtext></msubsup><mo>‖</mo></mrow><mn>2</mn><mn>2</mn></msubsup><mo>/</mo><mi>d</mi></mrow></math></div></foreignObject>
+    <path class="fm-link" id="fm-threshold-flow" d="M918 428H966" marker-end="url(#fm-blue-tip)"/>
+    <g id="fm-mask-grid"></g><rect id="fm-heat-cell-focus" x="710" y="360" width="11.3333" height="11.3333" fill="none" stroke="#ffffff" stroke-width="1.8" opacity="0" pointer-events="none"/>
+    <g class="fm-legend"><rect x="1134" y="404" width="12" height="12" rx="2" fill="#faeeeb" stroke="#dfaaa2"/><text x="1140" y="414" text-anchor="middle" fill="#be6d65">×</text><text x="1154" y="415">Prune</text><rect x="1134" y="440" width="12" height="12" rx="2" fill="#2b9d85"/><text x="1154" y="451">Retain</text></g>
+    <foreignObject x="952" y="508" width="248" height="35"><div xmlns="http://www.w3.org/1999/xhtml" class="fm-equation"><math aria-label="Retain if discrepancy exceeds gamma"><mrow><msub><mi>m</mi><mrow><mi>i</mi><mo>,</mo><mi>p</mi></mrow></msub><mo>=</mo><mi mathvariant="double-struck">𝟙</mi><mo>[</mo><msub><mi>ℓ</mi><mrow><mi>i</mi><mo>,</mo><mi>p</mi></mrow></msub><mo>&gt;</mo><mi>γ</mi><mo>]</mo><mo>,</mo><mspace width=".4em"/><mn>1</mn><mo>=</mo><mtext>retain</mtext></mrow></math></div></foreignObject>
+   </svg>
+  </div>
+  <div class="fm-status"><span id="method-phase-number">01 / 08</span><strong id="method-phase-title">Read historical context</strong><p id="method-phase-detail">The retained history conditions generation of the current chunk.</p></div>
+  <div class="fm-scrubber"><label for="method-progress">Linked timeline</label><input id="method-progress" type="range" min="0" max="1600" value="0" aria-label="Seek linked Figure 3 animation"><output id="method-time" for="method-progress">0.0 / 16 s</output></div>
+ </div>
+ <p class="fine-print">Schematic animation using Figure 3 assets, not a recorded inference trace. The 12×12 illustrative mask is derived from block-averaged brightness of the displayed heatmap, preserving its spatial pattern; it is not the exact latent-space mask at γ = 0.10. Mask computation happens during denoising; physical gather occurs when the chunk leaves the recent window (the delay is abbreviated here). Gray dashed: denoising · blue: data flow · green: retention mask. Published setting: probe step 2 (τ* = 899), γ = 0.10.</p>
+ <details class="paper-figure"><summary>View the complete Figure 3 <span aria-hidden="true">＋</span></summary><img src="assets/method/figure3.png" loading="lazy" alt="Complete Figure 3: online cache lifecycle and DeCoPrune denoising-consistency mask"><a class="text-button" href="assets/method/figure3.pdf" target="_blank" rel="noopener">Open vector PDF ↗</a></details>
+</div></section>
+
+<section class="section container" id="results" aria-labelledby="results-title">
+ <div class="section-heading horizontal"><div><p class="eyebrow">03 / Main results</p><h2 id="results-title">Memory quality.<br>Measured against speed.</h2></div><p>DeCoPrune preserves near-FullKV consistency while pruning historical KV workload. Select a point to inspect the trade-off.</p></div>
+ <div class="results-layout"><div class="chart-wrap"><svg id="results-chart" viewBox="0 0 760 400" role="img" aria-labelledby="chart-title chart-description"><title id="chart-title">CMBench consistency versus speedup</title><desc id="chart-description">Seven methods from the manuscript. Higher DINO and larger speedup are better. Focus or select a method to read exact values.</desc></svg></div><aside class="result-detail" aria-live="polite"><p class="eyebrow">Inspect a method</p><h3 id="result-name">DeCoPrune</h3><dl id="result-values"></dl><p id="result-note"></p></aside></div>
+ <div class="table-wrap"><table id="results-table"><caption>Main comparison from the manuscript · three-seed averages · DINO on a 0–1 scale</caption><thead><tr><th scope="col">Method</th><th scope="col">DINO ↑</th><th scope="col">PR ↑</th><th scope="col">FPS ↑</th><th scope="col">Speedup ↑</th><th scope="col">Temporal ↑</th><th scope="col">Motion ↑</th><th scope="col">Aesthetic ↑</th><th scope="col">Image ↑</th></tr></thead><tbody></tbody></table></div>
+ <p class="fine-print">Streaming and DummyForcing discard intermediate history, so their pruning budgets differ.</p>
+</section>
+<section class="benchmark-section" id="benchmark" aria-labelledby="benchmark-title"><div class="container benchmark-layout"><div class="section-heading"><p class="eyebrow">04 / CMBench</p><h2 id="benchmark-title">What does the<br>model remember?</h2><p>58 approximately one-minute episodes.<br>116 tasks that ask the model to recall earlier visual evidence.</p></div><div class="task-types"><article><span class="task-index">A</span><div><h3>Reappear</h3><p>Recover an object, person, or event observed earlier, preserving its identity and appearance after it has left the recent context.</p><div class="memory-sequence" aria-hidden="true"><span>Observe</span><i>···</i><span>Visual detour</span><i>→</i><strong>Recall object</strong></div></div></article><article><span class="task-index">B</span><div><h3>Revisit</h3><p>The context shows a camera transition from A to B and back to A. The continuation then revisits B, recovering the same scene and its salient object.</p><div class="memory-sequence"><span>Context: A → B → A</span><i>→</i><strong>Continuation: B</strong></div></div></article></div></div></section>
+<section class="section container" id="gallery" aria-labelledby="gallery-title">
+ <div class="section-heading horizontal"><div><p class="eyebrow">05 / Qualitative comparisons</p><h2 id="gallery-title">See what survives.</h2></div><p>A 10-second original, followed by six methods.<br>Inspect the source, then compare the continuations.</p></div>
+ <div class="gallery-tabs" id="gallery-tabs" role="group" aria-label="Choose a video case"></div><div class="gallery-header"><div><span class="task-badge" id="gallery-task"></span><h3 id="gallery-name"></h3><p id="gallery-target"></p></div><div class="gallery-navigation"><button id="case-prev" aria-label="Previous video case">←</button><span id="case-position"></span><button id="case-next" aria-label="Next video case">→</button></div></div>
+ <div class="video-gallery" id="video-gallery"></div><div class="video-controls"><button class="button primary" id="videos-play">Play comparisons</button><button class="button outline" id="videos-reset">Restart</button><label for="video-progress" class="sr-only">Seek all comparison videos</label><input id="video-progress" type="range" min="0" max="1000" value="0"><output id="video-time" for="video-progress">0:00</output></div>
+ <p class="fine-print" id="gallery-status" role="status">Case-level DINO scores are shown on a 0–1 scale; they are not the three-seed averages above.</p>
+</section>
+</main>
+<footer class="footer container"><div><a class="wordmark" href="#top">DeCoPrune</a><p>Efficient KV-cache pruning via denoising consistency.</p></div><div><a href="https://github.com/xizaoqu/cmbench-rebuild" target="_blank" rel="noopener">Code ↗</a><a href="https://huggingface.co/datasets/Aoraku/CMBench" target="_blank" rel="noopener">CMBench ↗</a><a href="#paper" data-paper-link>Paper ↗</a></div><p id="paper" class="paper-status" role="status">Paper: arXiv link coming soon.</p></footer>
+<noscript><div class="noscript">Enable JavaScript for the linked method animation and video comparisons. The <a href="assets/method/figure3.pdf">method figure</a> is available without JavaScript.</div></noscript>
+</body></html>

@@ -1,0 +1,13 @@
+{
+  "caseId": "case_09_lakeside_shelter_clip03",
+  "title": "The green-banded thermos",
+  "contextSeconds": 60,
+  "resultSeconds": 3,
+  "resultExcerptSeconds": [
+    0,
+    3
+  ],
+  "benchmarkPrompt": "Continue the coherent first-person video from its final frame. Reproduce the exact same physical slender cylindrical thermos with its screw-top lid from the preceding context. Treat the preceding video as the complete and authoritative visual reference for the thermos. The action is explicit and continuous: the same hands naturally lift the same slender cylindrical thermos from the canvas day bag back into clear view. Preserve the thermos's exact instance identity, body and lid geometry, dimensions, proportions, neck rings, base, decorative-marking layout, materials, texture, wear, surface details, scale, orientation, motion, and hand interaction. Maintain the same scene, lighting, shadows, perspective, spatial layout, viewpoint behavior, and visual style, with physically plausible and temporally smooth motion.",
+  "provenance": "Lakeside shelter: the first 3 seconds of the continuation, played at its original speed. The context overlay and generated continuation are from the same case and run. The prompt below is the benchmark continuation prompt. This companion example follows Figure 1's presentation, not the exact Figure 1 run; its metrics are not substituted for Figure 1's.",
+  "maskNote": "Recorded KV-retention overlay: green = retain; red = prune. The first 60 seconds of the archived context-plus-generation overlay are shown; alignment padding and the generation segment are excluded."
+}
