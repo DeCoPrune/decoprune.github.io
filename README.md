@@ -7,7 +7,7 @@ Project website for **DeCoPrune: Efficient KV-Cache Pruning for Autoregressive V
 ¹ Nanyang Technological University · ² Tsinghua University · ³ Princeton University<br>
 \* Equal contribution. † Corresponding author.
 
-[Website](https://aoraku.github.io/decoprune.github.io/) · [CMBench dataset](https://huggingface.co/datasets/Aoraku/CMBench)
+[Website](https://decoprune.github.io/) · [CMBench dataset](https://huggingface.co/datasets/Aoraku/CMBench)
 
 ## Contents
 
